@@ -103,6 +103,7 @@ public class Stitching_Grid implements PlugIn
 	public static boolean defaultSubpixelAccuracy = false;
 	public static boolean defaultDownSample = false;
 	public static boolean defaultDisplayFusion = false;
+	public static boolean defaultLimitPeaksToAbsolute = true;
 	public static boolean writeOnlyTileConfStatic = false;
 	
 	public static boolean defaultIgnoreCalibration = false;
@@ -218,6 +219,7 @@ public class Stitching_Grid implements PlugIn
 		gd.addCheckbox( "Subpixel_accuracy", defaultSubpixelAccuracy );
 		gd.addCheckbox( "Downsample_tiles", defaultDownSample);
 		gd.addCheckbox( "Display_fusion", defaultDisplayFusion);
+		gd.addCheckbox( "Limit to Peaks within Absolute Threshold", defaultLimitPeaksToAbsolute);
 		gd.addCheckbox( "Use_virtual_input_images (Slow! Even slower when combined with subpixel accuracy during fusion!)", defaultVirtualInput );
 		gd.addChoice( "Computation_parameters", CommonFunctions.cpuMemSelect, CommonFunctions.cpuMemSelect[ defaultMemorySpeedChoice ] );
 		gd.addChoice( "Image_output", resultChoices, resultChoices[ defaultResult ] );
@@ -347,6 +349,7 @@ public class Stitching_Grid implements PlugIn
 		params.subpixelAccuracy = defaultSubpixelAccuracy = gd.getNextBoolean();
 		final boolean downSample = params.downSample = defaultDownSample = gd.getNextBoolean();
 		params.displayFusion = defaultDisplayFusion = gd.getNextBoolean();
+		params.limitPeaksToAbsolute = defaultLimitPeaksToAbsolute = gd.getNextBoolean();
 		params.virtual = defaultVirtualInput = gd.getNextBoolean();
 		params.cpuMemChoice = defaultMemorySpeedChoice = gd.getNextChoiceIndex();
 		params.outputVariant = defaultResult = gd.getNextChoiceIndex();

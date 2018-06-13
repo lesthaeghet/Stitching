@@ -214,12 +214,12 @@ public class PairWiseStitchingImgLib
 			return null;
 		}
 		
-		final PairWiseStitchingResult result = computePhaseCorrelation( img1, img2, params.checkPeaks, params.subpixelAccuracy );
+		final PairWiseStitchingResult result = computePhaseCorrelation( img1, img2, params.checkPeaks, params.subpixelAccuracy, params.absoluteThreshold, params.limitPeaksToAbsolute );
 		
 		return result;
 	}
 	
-	public static < T extends RealType<T>, S extends RealType<S> > PairWiseStitchingResult computePhaseCorrelation( final Image<T> img1, final Image<S> img2, final int numPeaks, final boolean subpixelAccuracy )
+	public static < T extends RealType<T>, S extends RealType<S> > PairWiseStitchingResult computePhaseCorrelation( final Image<T> img1, final Image<S> img2, final int numPeaks, final boolean subpixelAccuracy, final double absoluteThreshold, final boolean limitPeaksToAbsolute)
 	{
 		final PhaseCorrelation< T, S > phaseCorr = new PhaseCorrelation<T, S>( img1, img2 );
 		phaseCorr.setInvestigateNumPeaks( numPeaks );
@@ -235,9 +235,26 @@ public class PairWiseStitchingImgLib
 		}
 
 		// result
-		final PhaseCorrelationPeak pcp = phaseCorr.getShift();
+		PhaseCorrelationPeak pcp = phaseCorr.getShift();
 		final float[] shift = new float[ img1.getNumDimensions() ];
 		final PairWiseStitchingResult result;
+		
+		// Added by Tyler Lesthaeghe to Allow Option To Only Use Peaks Inside Absolute Threshold
+		ArrayList<PhaseCorrelationPeak> peaklist = phaseCorr.getAllShifts();
+		
+		if (limitPeaksToAbsolute)
+		{
+			for (int i = (peaklist.size() - 1); i >= 0; --i)
+			{
+				pcp = peaklist.get(i);
+				int[] position = new int[ img1.getNumDimensions() ];
+				position = pcp.getPosition();
+				if ((Math.abs(position[0]) < absoluteThreshold) && (Math.abs(position[1]) < absoluteThreshold))
+				{
+					break;
+				}			
+			}
+		}
 		
 		if ( subpixelAccuracy )
 		{
